@@ -5,7 +5,7 @@
             <el-container class="el-container">
                 <CommonHeader />
                 <!-- <CommonTab /> -->
-                <el-main class="right-main">
+                <el-main class="right-main bg-gray-100 p-4">
                     <router-view />
                 </el-main>
             </el-container>
@@ -46,7 +46,7 @@ import CommonTab from '../components/CommonTab.vue';
 
         &>.el-aside {
             height: 100%;
-            background-color: #545C64;
+            background-color: white;
         }
     }
 }

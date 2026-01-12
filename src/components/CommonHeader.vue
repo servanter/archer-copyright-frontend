@@ -1,6 +1,7 @@
 <template>
-    <el-header>
-        <div class="l-content">
+    <div class="h-16 w-full">
+    <el-header class="h-full">
+        <div class="l-content h-16">
             <el-button size="small" plain @click="handlerCollapse">
                 <el-icon>
                     <Menu />
@@ -14,11 +15,11 @@
                 </el-breadcrumb>
             </h3>
         </div>
-        <div class="r-content">
-
-            <el-dropdown>
-                <span class="el-dropdown-link">
-                    <img :src="getImgSrc('user.png')" class="user">
+        <div class="h-full flex items-center ">
+            <el-dropdown class=" w-28 h-full ">
+                <span class="flex items-center w-28 justify-center cursor-pointer hover:bg-gray-100 rounded">
+                    <img :src="getImgSrc('user.png')" class="h-[40px] w-[40px] rounded-full">
+                    <span class="ml-2">张三</span>
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
@@ -29,7 +30,10 @@
             </el-dropdown>
 
         </div>
+        
     </el-header>
+    <hr class="w-full" style="color:#e4e7ed">
+    </div>
 </template>
 <script setup>
 import { computed } from 'vue';
@@ -54,20 +58,14 @@ function logout() {
 </script>
 
 <style lang="less" scoped>
-header {
+:deep(.el-header) {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    background-color: #333
-}
-
-.r-content {
-    .user {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-    }
+    background-color: white;
+    height: 100%;
+    
 }
 
 .l-content {
@@ -78,14 +76,12 @@ header {
     .el-button {
         margin-right: 20px;
     }
-
-    h3 {
-        color: #FFF;
-    }
+  
 }
 
 :deep(.bread span) {
-    color: #FFFFFF !important;
+    color: black!important;
     cursor: pointer !important;
 }
+
 </style>

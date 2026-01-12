@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-form :inline="true" :model="searchForm">
-        <el-row class="shadow-md p-4" >
+        <el-row class="shadow-md p-4 bg-white" >
                 <el-col :span="21" >
                     <el-form-item label="用户名" >
                                                 <el-input v-model="searchForm.userName" placeholder="请输入用户名" clearable />

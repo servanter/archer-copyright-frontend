@@ -1,27 +1,29 @@
 <template>
-    <el-aside :width="$store.state.isCollapse ? '180px' : '64px'">
+    <el-aside :width="$store.state.isCollapse ? '180px' : '60px'">
 
-        <h3 v-show="$store.state.isCollapse">xxxxx</h3>
-        <h3 v-show="!$store.state.isCollapse">yyyy</h3>
-        <el-menu class="el-menu-vertical-demo" text-color="#FFFFFF" background-color="#545C64"
-            :collapse="!$store.state.isCollapse" :collapse-transition="false">
-            <el-menu-item :index="item.path" v-for="item in noChildren()" :key="item.path" @click="clickMenu(item)">
-                <component class="icons" :is="item.icon"></component>
+       <div class="h-16 flex flex-col items-center justify-center">
+         <p v-show="$store.state.isCollapse" class="text-xl text-center text-gray-500 flex items-center justify-center h-12">管理系统</p>
+        <p v-show="!$store.state.isCollapse" class="text-center text-gray-500">管理系统</p>
+       </div>
+       <hr class="border-gray-300">
+        <el-menu class="el-menu-vertical-demo" text-color="black" 
+            :collapse="!$store.state.isCollapse" :collapse-transition="true">
+            <el-menu-item :index="item.path" v-for="item in noChildren()" :key="item.path" @click="clickMenu(item)" :class="!$store.state.isCollapse ? 'flex items-center justify-center' : 'gap-1 flex items-center mx-auto  justify-between w-3/4'">
+                <component :class="$store.state.isCollapse ? 'h-[24px] w-[24px]' : 'h-[18px] w-[18px]'" :is="item.icon"></component>
                 <span>{{ item.label }}</span>
             </el-menu-item>
-
 
             <el-sub-menu :index="item.label" v-for="item in hasChildren()" :key="item.path">
 
                 <template #title>
-                    <component class="icons" :is="item.icon"></component>
+                    <component :class="$store.state.isCollapse ? 'h-[24px] w-[24px]' : 'h-[18px] w-[18px]'" :is="item.icon"></component>
                     <span>{{ item.label }}</span>
                 </template>
 
                 <el-menu-item-group>
                     <el-menu-item :index="subItem.path" v-for="(subItem, subIndex) in item.children" :key="subIndex"
                         @click="clickMenu(subItem)">
-                        <component class="icons" :is="subItem.icon"></component>
+                        <component :class="$store.state.isCollapse ? 'h-[24px] w-[24px]' : 'h-[18px] w-[18px]'" :is="subItem.icon"></component>
                         <span>{{ subItem.label }}</span>
                     </el-menu-item>
                 </el-menu-item-group>
@@ -62,16 +64,12 @@ function clickMenu(menu) {
 
 <style lang="css" scoped>
 .el-aside {
+    border-right: 1px solid #e4e7ed;
     h3 {
         line-height: 48px;
         color: #FFFFFF;
         text-align: center;
     }
-}
-
-.icons {
-    width: 18px;
-    height: 18px;
 }
 
 .menus {
@@ -81,6 +79,5 @@ function clickMenu(menu) {
 
 .el-menu {
     border-right: none;
-
 }
 </style>
