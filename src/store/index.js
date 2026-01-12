@@ -12,7 +12,7 @@ export default createStore({
                 icon: 'home'
             }
         ],
-        menu:localStorage.getItem('menu') ? JSON.parse(localStorage.getItem('menu')) : '[]',
+        menu:localStorage.getItem('menu') ? JSON.parse(localStorage.getItem('menu')) : [],
         token: localStorage.getItem('token') || ''
     },
     mutations: {
@@ -39,7 +39,10 @@ export default createStore({
         },
 
         initMenuData(state, router) {
-            
+            if(!state.menu || state.menu.length == 0) {
+                return
+            }
+            console.log('初始化菜单->', state.menu, state.menu.length)
             const menuArray = []
             state.menu.forEach(item => {
                 if (item.children) {

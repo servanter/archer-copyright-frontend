@@ -4,7 +4,7 @@
             <CommonAside />
             <el-container class="el-container">
                 <CommonHeader />
-                <CommonTab />
+                <!-- <CommonTab /> -->
                 <el-main class="right-main">
                     <router-view />
                 </el-main>

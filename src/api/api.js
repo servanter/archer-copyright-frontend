@@ -21,37 +21,9 @@ export default {
             data: params
         })
     },
-    getUserData(params) {
-        return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/227568338?apifoxApiId=227568338',
-            method: 'get',
-            data: params
-        })
-    },
-    addUserData(params) {
-        return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/228015397?apifoxApiId=228015397',
-            method: 'post',
-            data: params
-        })
-    },
-    editUserData(params) {
-        return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/228015397?apifoxApiId=228015397',
-            method: 'post',
-            data: params
-        })
-    },
-    deleteUserData(params) {
-        return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/228015397?apifoxApiId=228015397',
-            method: 'post',
-            data: params
-        })
-    },
     login(params) {
         return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/227490044?apifoxApiId=227490044',
+            url: 'http://localhost:8080/api/login',
             method: 'post',
             data: params
         })

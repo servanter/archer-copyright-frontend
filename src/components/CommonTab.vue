@@ -1,7 +1,7 @@
 <template>
     <div class="tags">
         <el-tag v-for="(item, index) in tags" :key="item.name" :closable="item.name !== 'home'" :disable-transitions="false"
-        :effect="$route.name === item.name ? 'dark' : 'light'" @click="changeTab(item)" @close="closeTab(item, index)" 
+        :effect="$route.label === item.label ? 'dark' : 'light'" @click="changeTab(item)" @close="closeTab(item, index)" 
         >
             {{ item.label }}
         </el-tag>

@@ -25,10 +25,25 @@ let loginForm = reactive({
     password: 'password'
 })
 
+/**
+ * 用户登录处理函数
+ * 
+ * @async
+ * @function login
+ * @description 处理用户登录逻辑，包括调用API、设置菜单数据、存储token和路由跳转
+ * 
+ * @returns {Promise<void>} 无返回值
+ * 
+ * @throws {Error} 如果登录API调用失败或返回无效数据
+ * 
+ * @example
+ * // 在组件中调用
+ * login()
+ */
 async function login() {
     const res = await proxy.$api.login(loginForm)
+    console.log('res ', res)
     if (res) {
-
         store.commit('setMenuData', res.data.menuData)
         store.commit('initMenuData', routerGlobal)
         console.log('rrrrr ', routerGlobal)
