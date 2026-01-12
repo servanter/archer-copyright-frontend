@@ -1,26 +1,13 @@
 <template>
-    <div class="header">
+    <div>
         <el-form :inline="true" :model="searchForm">
-            <el-row>
-                <el-col :span="3">
-                    <el-button type="info" color="#40485b" @click="queryUserList()">
-                        <el-icon size="16">
-                            <Refresh />
-                        </el-icon>
-                    </el-button>
-                    <el-button type="success" @click="handleAdd">
-                        <el-icon size="16">
-                            <Plus />
-                        </el-icon>
-                        <span>新增</span>
-                    </el-button>
-                </el-col>
-                <el-col :span="21" style="text-align: right;">
-                    <el-form-item label="用户名">
+        <el-row class="shadow-md p-4" >
+                <el-col :span="21" >
+                    <el-form-item label="用户名" >
                                                 <el-input v-model="searchForm.userName" placeholder="请输入用户名" clearable />
                     </el-form-item>
 
-                    <el-form-item label="密码">
+                    <el-form-item label="密码" >
                                                 <el-input v-model="searchForm.password" placeholder="请输入密码" clearable />
                     </el-form-item>
 
@@ -31,18 +18,19 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-
-                    <el-form-item>
-                        <el-button type="primary" @click="clickSearch">搜索</el-button>
-                    </el-form-item>
                 </el-col>
-            </el-row>
+                    
+                <el-col :span="3">
+                    <div class="flex justify-end">
+                        <el-button type="primary" @click="clickSearch">搜索</el-button>
+                    </div>
+                </el-col>
+        </el-row>
         </el-form>
     </div>
 
-
-    <div class="table">
-        <el-table :data="userList" style="width: 100%" v-loading="loadStatus" empty-text="没有更多了~" border>
+    <div class="table w-full mt-4">
+        <el-table :data="userList" v-loading="loadStatus" empty-text="没有更多了~" border style="overflow: hidden;">
             <el-table-column prop="id" label="ID" />
             <el-table-column prop="userName" label="用户名" />
             <el-table-column prop="password" label="密码" />
@@ -58,7 +46,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination background class="pager" layout="prev, pager, next" :total="config.total"
+        <el-pagination background class="mt-4 w-full flex justify-end" layout="prev, pager, next" :total="config.total"
             @current-change="handleClick" />
     </div>
 
@@ -240,21 +228,15 @@ function clickDelete(item) {
 </script>
 
 <style lang="less" scoped>
-.table {
-    position: relative;
 
-    .pager {
-        position: absolute;
-        bottom: -50px;
-        right: 0;
-    }
+:deep(.el-form-item) {
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
 }
 
-.header {
+:deep(.el-form-item__content) {
     display: flex;
-
-    form {
-        width: 100%;
-    }
+    align-items: center;
 }
 </style>

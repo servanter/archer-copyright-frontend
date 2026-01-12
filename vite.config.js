@@ -14,5 +14,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
-
+  css: {
+    postcss: './postcss.config.js',
+  },
 })
