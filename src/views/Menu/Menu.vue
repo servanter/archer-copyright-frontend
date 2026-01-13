@@ -1,22 +1,8 @@
 <template>
     <div class="header">
-        <el-form :inline="true" :model="searchForm">
-            <el-row>
-                <el-col :span="3">
-                    <el-button type="info" color="#40485b" @click="queryMenuList()">
-                        <el-icon size="16">
-                            <Refresh />
-                        </el-icon>
-                    </el-button>
-                    <el-button type="success" @click="handleAdd">
-                        <el-icon size="16">
-                            <Plus />
-                        </el-icon>
-                        <span>新增</span>
-                    </el-button>
-                </el-col>
-                <el-col :span="21" style="text-align: right;">
-                    <el-form-item label="菜单名称">
+       <el-form :inline="true" :model="searchForm" class="search-form">
+        <el-row class="shadow-md p-4 bg-white" >
+                <el-form-item label="菜单名称">
                                                 <el-input v-model="searchForm.name" placeholder="请输入菜单名称" clearable />
                     </el-form-item>
 
@@ -27,17 +13,27 @@
                     <el-form-item label="跳转地址">
                                                 <el-input v-model="searchForm.url" placeholder="请输入跳转地址" clearable />
                     </el-form-item>
-
-                    <el-form-item>
+                    <el-col :span="3">
+                    <div class="flex justify-end">
                         <el-button type="primary" @click="clickSearch">搜索</el-button>
-                    </el-form-item>
+                    </div>
                 </el-col>
-            </el-row>
+
+        </el-row>
         </el-form>
     </div>
 
 
-    <div class="table">
+    <div class="table w-full mt-4 bg-white shadow-md px-4 pb-4">
+    <div class="mb-2 flex justify-start items-center h-12"> 
+               <el-button type="success" @click="handleAdd">
+            <el-icon size="16">
+                <Plus />
+            </el-icon>
+            <span>新增</span>
+        </el-button>
+        
+            </div>
         <el-table :data="menuList" style="width: 100%" v-loading="loadStatus" empty-text="没有更多了~" border>
             <el-table-column prop="id" label="ID" />
             <el-table-column prop="name" label="菜单名称" />
@@ -45,39 +41,38 @@
             <el-table-column prop="url" label="跳转地址" />
             <el-table-column prop="validStr" label="状态" />
             <el-table-column prop="createTime" label="创建时间" />
-            <el-table-column prop="updateTime" label="修改时间" />            <el-table-column fixed="right" label="操作">
-                <template #default="scope">
-                    <el-button type="primary" size="small" @click="clickEdit(scope.row)">
+            <el-table-column prop="updateTime" label="修改时间" />            
+            <el-table-column fixed="right" label="操作">
+                 <template #default="scope">
+                    <div class="grid grid-cols-2 gap-2">
+                        <el-button type="primary" size="small" @click="clickEdit(scope.row)" class="!ml-0">
                         编辑
                     </el-button>
-                    <el-button type="danger" size="small" @click="clickDelete(scope.row)">删除</el-button>
+                    <el-button type="danger" size="small" @click="clickDelete(scope.row)" class="!ml-0">删除</el-button>
+                   </div>  
                 </template>
+
             </el-table-column>
         </el-table>
-        <el-pagination background class="pager" layout="prev, pager, next" :total="config.total"
+        <el-pagination background class="mt-4 w-full flex justify-end" layout="prev, pager, next" :total="config.total"
             @current-change="handleClick" />
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="action === 'add' ? '新增菜单' : '编辑菜单'" draggable="true" width="650">
+    <el-dialog v-model="dialogVisible" :title="action === 'add' ? '新增菜单' : '编辑菜单'" draggable width="650">
         <el-form :inline="true" :model="submitForm" ref="form">
-            <el-row>
-                <el-col :span="12">
-                    <el-form-item label="菜单名称" prop="name" :rules="[{ required: true, message: '菜单名称是必填项' }]">
+            <div class="grid grid-cols-2 gap-2">
+                 <el-form-item label="菜单名称" prop="name" :rules="[{ required: true, message: '菜单名称是必填项' }]">
                         <el-input v-model="submitForm.name" placeholder="请输入菜单名称" />
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="父级菜单ID" prop="parentId" :rules="[{ required: true, message: '父级菜单ID是必填项' }]">
+
+                     <el-form-item label="父级菜单ID" prop="parentId" :rules="[{ required: true, message: '父级菜单ID是必填项' }]">
                         <el-input v-model="submitForm.parentId" placeholder="请输入父级菜单ID" />
                     </el-form-item>
-                </el-col>            </el-row>
-
-            <el-row>
-                <el-col :span="12">
                     <el-form-item label="跳转地址" prop="url" :rules="[{ required: true, message: '跳转地址是必填项' }]">
                         <el-input v-model="submitForm.url" placeholder="请输入跳转地址" />
                     </el-form-item>
-                </el-col>            </el-row>
+
+            </div>
 
         </el-form>
         <template #footer>
@@ -230,21 +225,15 @@ function clickDelete(item) {
 </script>
 
 <style lang="less" scoped>
-.table {
-    position: relative;
 
-    .pager {
-        position: absolute;
-        bottom: -50px;
-        right: 0;
-    }
+.search-form :deep(.el-form-item) {
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
 }
 
-.header {
+.search-form :deep(.el-form-item__content) {
     display: flex;
-
-    form {
-        width: 100%;
-    }
+    align-items: center;
 }
 </style>

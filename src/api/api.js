@@ -1,29 +1,8 @@
 import request from "./request";
 export default {
-    getTableData(params) {
+       login(params) {
         return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/227186642?apifoxApiId=227186642',
-            method: 'get',
-            data: params
-        })
-    },
-    getCountData(params) {
-        return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/227189002?apifoxApiId=227189002',
-            method: 'get',
-            data: params
-        })
-    },
-    getMenuData(params) {
-        return request({
-            url: 'https://apifoxmock.com/m2/5357828-5029552-default/227490044',
-            method: 'get',
-            data: params
-        })
-    },
-    login(params) {
-        return request({
-            url: 'http://localhost:8080/api/login',
+            url: 'http://localhost:8080/api/login/login',
             method: 'post',
             data: params
         })
@@ -84,6 +63,20 @@ export default {
             data: params
         })
     },
+    queryRoleMenuList(params) {
+        return request({
+            url: 'http://localhost:8080/api/menu/role',
+            method: 'get',
+            data: params
+        })
+    },
+    addRoleMenuList(params) {
+        return request({
+            url: 'http://localhost:8080/api/menu/setting',
+            method: 'post',
+            data: params
+        })
+    },
     queryUserList(params) {
         return request({
             url: 'http://localhost:8080/api/user/list',
@@ -108,6 +101,49 @@ export default {
     modifyUser(params) {
         return request({
             url: 'http://localhost:8080/api/user/modify',
+            method: 'post',
+            data: params
+        })
+    },
+    queryUserRoleList(params) {
+        return request({
+            url: 'http://localhost:8080/api/role/user',
+            method: 'get',
+            data: params
+        })
+    },
+    addUserRoleList(params) {
+        return request({
+            url: 'http://localhost:8080/api/role/setting',
+            method: 'post',
+            data: params
+        })
+    },
+ 
+    queryNewsList(params) {
+        return request({
+            url: 'http://localhost:8080/api/news/list',
+            method: 'get',
+            data: params
+        })
+    },
+    removeNews(params) {
+        return request({
+            url: 'http://localhost:8080/api/news/remove',
+            method: 'get',
+            data: params
+        })
+    },
+    addNews(params) {
+        return request({
+            url: 'http://localhost:8080/api/news/add',
+            method: 'post',
+            data: params
+        })
+    },
+    modifyNews(params) {
+        return request({
+            url: 'http://localhost:8080/api/news/modify',
             method: 'post',
             data: params
         })
