@@ -300,14 +300,4 @@ const defaultProps = {
 
 <style lang="less" scoped>
 
-.search-form :deep(.el-form-item) {
-    margin-bottom: 0;
-    display: inline-flex;
-    align-items: center;
-}
-
-.search-form :deep(.el-form-item__content) {
-    display: flex;
-    align-items: center;
-}
 </style>

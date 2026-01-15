@@ -120,30 +120,30 @@ export default {
         })
     },
  
-    queryNewsList(params) {
+    queryCopyrightList(params) {
         return request({
-            url: 'http://localhost:8080/api/news/list',
+            url: 'http://localhost:8080/api/copyright/list',
             method: 'get',
             data: params
         })
     },
-    removeNews(params) {
+    removeCopyright(params) {
         return request({
-            url: 'http://localhost:8080/api/news/remove',
+            url: 'http://localhost:8080/api/copyright/remove',
             method: 'get',
             data: params
         })
     },
-    addNews(params) {
+    addCopyright(params) {
         return request({
-            url: 'http://localhost:8080/api/news/add',
+            url: 'http://localhost:8080/api/copyright/add',
             method: 'post',
             data: params
         })
     },
-    modifyNews(params) {
+    modifyCopyright(params) {
         return request({
-            url: 'http://localhost:8080/api/news/modify',
+            url: 'http://localhost:8080/api/copyright/modify',
             method: 'post',
             data: params
         })
