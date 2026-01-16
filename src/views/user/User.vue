@@ -2,16 +2,16 @@
     <div>
         <el-form :inline="true" :model="searchForm" class="search-form">
         <el-row class="shadow-md p-4 bg-white" >
-                <el-col :span="21" >
-                    <el-form-item label="用户名" >
+                <el-col :span="22" >
+                    <el-form-item label="用户名"  label-width="100px">
                                                 <el-input v-model="searchForm.userName" placeholder="请输入用户名" clearable />
                     </el-form-item>
 
-                    <el-form-item label="密码" >
+                    <el-form-item label="密码"  label-width="100px">
                                                 <el-input v-model="searchForm.password" placeholder="请输入密码" clearable />
                     </el-form-item>
 
-                    <el-form-item label="用户类型">
+                    <el-form-item label="用户类型" label-width="100px">
                         <el-select v-model="searchForm.type" placeholder="请选择用户类型" style="width:168px">
                             <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
                                 :value="item.value">
@@ -20,7 +20,7 @@
                     </el-form-item>
                 </el-col>
                     
-                <el-col :span="3">
+                <el-col :span="2">
                     <div class="flex justify-end">
                         <el-button type="primary" @click="clickSearch">搜索</el-button>
                     </div>
@@ -68,31 +68,36 @@
             @current-change="handleClick" />
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="action === 'add' ? '新增用户' : '编辑用户'" draggable="true" width="650">
-        <el-form :model="submitForm" ref="form">
-            <div class="grid grid-cols-2 gap-2">
-                <el-form-item label="用户名" prop="userName" :rules="[{ required: true, message: '用户名是必填项' }]" label-width="80px">
-                    <el-input v-model="submitForm.userName" placeholder="请输入用户名" />
-                </el-form-item>
-                <el-form-item label="密码" prop="password" :rules="[{ required: true, message: '密码是必填项' }]" label-width="80px">
-                    <el-input v-model="submitForm.password" placeholder="请输入密码" />
-                </el-form-item>
-                <el-form-item label="用户类型" prop="type" :rules="[{ required: true, message: '用户类型是必填项' }]" label-width="80px">
-                    <el-select v-model="submitForm.type" placeholder="请选择用户类型" style="width:100%">
-                        <el-option v-for="item in typeSubmitOptions" :key="item.value" :label="item.label"
-                            :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </div>
+
+     <el-drawer v-model="dialogVisible" direction="rtl">
+    <template #header>
+      <h4>{{ action === 'add' ? '新增用户' : '编辑用户' }}</h4>
+    </template>
+    <template #default>
+       <el-form :model="submitForm" ref="form" label-width="130px" label-position="left">
+            <el-form-item label="用户名" prop="userName" :rules="[{ required: true, message: '用户名是必填项' }]">
+                <el-input v-model="submitForm.userName" placeholder="请输入用户名" />
+            </el-form-item>
+            <el-form-item label="密码" prop="password" :rules="[{ required: true, message: '密码是必填项' }]">
+                <el-input v-model="submitForm.password" placeholder="请输入密码" />
+            </el-form-item>
+            <el-form-item label="用户类型" prop="type" :rules="[{ required: true, message: '用户类型是必填项' }]">
+                <el-select v-model="submitForm.type" placeholder="请选择用户类型" style="width:100%">
+                    <el-option v-for="item in typeSubmitOptions" :key="item.value" :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
         </el-form>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button @click="handleCancel">取消</el-button>
-                <el-button type="primary" @click="onSubmit">确定</el-button>
-            </div>
-        </template>
-    </el-dialog>
+    </template>
+    <template #footer>
+        <div class="dialog-footer">
+            <el-button @click="handleCancel">取消</el-button>
+            <el-button type="primary" @click="onSubmit">确定</el-button>
+        </div>
+    </template>
+  </el-drawer>
+
     
     <el-dialog v-model="roleDialogVisible" title="编辑角色" draggable width="400">
         <el-form :inline="true">
@@ -298,6 +303,17 @@ const defaultProps = {
 
 </script>
 
+
 <style lang="less" scoped>
 
+.search-form :deep(.el-form-item) {
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.search-form :deep(.el-form-item__content) {
+    display: flex;
+    align-items: center;
+}
 </style>

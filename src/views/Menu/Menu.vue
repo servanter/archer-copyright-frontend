@@ -1,19 +1,19 @@
 <template>
     <div class="header">
        <el-form :inline="true" :model="searchForm" class="search-form">
-        <el-row class="shadow-md p-4 bg-white" >
-                <el-form-item label="菜单名称">
+        <el-row class="shadow-md p-4 bg-white" :span="22">
+                <el-form-item label="菜单名称" label-width="100px">
                                                 <el-input v-model="searchForm.name" placeholder="请输入菜单名称" clearable />
                     </el-form-item>
 
-                    <el-form-item label="父级菜单ID">
+                    <el-form-item label="父级菜单ID" label-width="100px">
                                                 <el-input v-model="searchForm.parentId" placeholder="请输入父级菜单ID" clearable />
                     </el-form-item>
 
-                    <el-form-item label="跳转地址">
+                    <el-form-item label="跳转地址" label-width="100px">
                                                 <el-input v-model="searchForm.url" placeholder="请输入跳转地址" clearable />
                     </el-form-item>
-                    <el-col :span="3">
+                    <el-col :span="2">
                     <div class="flex justify-end">
                         <el-button type="primary" @click="clickSearch">搜索</el-button>
                     </div>
@@ -58,30 +58,33 @@
             @current-change="handleClick" />
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="action === 'add' ? '新增菜单' : '编辑菜单'" draggable width="650">
-        <el-form :inline="true" :model="submitForm" ref="form">
-            <div class="grid grid-cols-2 gap-2">
-                 <el-form-item label="菜单名称" prop="name" :rules="[{ required: true, message: '菜单名称是必填项' }]">
-                        <el-input v-model="submitForm.name" placeholder="请输入菜单名称" />
-                    </el-form-item>
 
-                     <el-form-item label="父级菜单ID" prop="parentId" :rules="[{ required: true, message: '父级菜单ID是必填项' }]">
-                        <el-input v-model="submitForm.parentId" placeholder="请输入父级菜单ID" />
-                    </el-form-item>
-                    <el-form-item label="跳转地址" prop="url" :rules="[{ required: true, message: '跳转地址是必填项' }]">
-                        <el-input v-model="submitForm.url" placeholder="请输入跳转地址" />
-                    </el-form-item>
+    <el-drawer v-model="dialogVisible" direction="rtl">
+        <template #header>
+        <h4>{{ action === 'add' ? '新增菜单' : '编辑菜单' }}</h4>
+        </template>
+        <template #default>
+        <el-form :model="submitForm" ref="form" label-width="130px" label-position="left">
+                <el-form-item label="菜单名称" prop="name" :rules="[{ required: true, message: '菜单名称是必填项' }]">
+                    <el-input v-model="submitForm.name" placeholder="请输入菜单名称" />
+                </el-form-item>
 
-            </div>
-
-        </el-form>
+                    <el-form-item label="父级菜单ID" prop="parentId" :rules="[{ required: true, message: '父级菜单ID是必填项' }]">
+                    <el-input v-model="submitForm.parentId" placeholder="请输入父级菜单ID" />
+                </el-form-item>
+                <el-form-item label="跳转地址" prop="url" :rules="[{ required: true, message: '跳转地址是必填项' }]">
+                    <el-input v-model="submitForm.url" placeholder="请输入跳转地址" />
+                </el-form-item>
+            </el-form>
+        </template>
         <template #footer>
             <div class="dialog-footer">
                 <el-button @click="handleCancel">取消</el-button>
                 <el-button type="primary" @click="onSubmit">确定</el-button>
             </div>
         </template>
-    </el-dialog>
+    </el-drawer>
+
 </template>
 
 <script setup>

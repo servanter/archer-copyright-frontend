@@ -148,4 +148,42 @@ export default {
             data: params
         })
     },
+
+
+    
+    queryCategoryList(params) {
+        return request({
+            url: 'http://localhost:8080/api/category/list',
+            method: 'get',
+            data: params
+        })
+    },
+    queryChildrenList(params) {
+        return request({
+            url: 'http://localhost:8080/api/category/children',
+            method: 'get',
+            data: params
+        })
+    },
+    removeCategory(params) {
+        return request({
+            url: 'http://localhost:8080/api/category/remove',
+            method: 'get',
+            data: params
+        })
+    },
+    addCategory(params) {
+        return request({
+            url: 'http://localhost:8080/api/category/add',
+            method: 'post',
+            data: params
+        })
+    },
+    modifyCategory(params) {
+        return request({
+            url: 'http://localhost:8080/api/category/modify',
+            method: 'post',
+            data: params
+        })
+    },
 }

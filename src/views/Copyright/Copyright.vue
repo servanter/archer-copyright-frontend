@@ -12,7 +12,7 @@
                     </el-form-item>
 
                     <el-form-item label="状态" label-width="100px">
-                        <el-select v-model="searchForm.status" placeholder="请选择状态" style="width:168px">
+                        <el-select v-model="searchForm.status" placeholder="请选择状态" style="width:148px">
                             <el-option v-for="item in statusOptions" :key="item.value" :label="item.label"
                                 :value="item.value">
                             </el-option>
@@ -67,12 +67,10 @@
             <el-table-column prop="createTime" label="创建时间" />
             <el-table-column prop="updateTime" label="修改时间" />            <el-table-column fixed="right" label="操作">
                 <template #default="scope">
-                    <div class="grid grid-cols-2 gap-2 min-w-[132px]">
                     <el-button type="primary" size="small" @click="clickEdit(scope.row)">
                         编辑
                     </el-button>
                     <el-button type="danger" size="small" @click="clickDelete(scope.row)">删除</el-button>
-                    </div>
                 </template>
             </el-table-column>
         </el-table>
@@ -80,68 +78,64 @@
             @current-change="handleClick" />
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="action === 'add' ? '新增IP' : '编辑IP'" draggable width="650">
-        <el-form :inline="true" :model="submitForm" ref="form">
-            <el-row>
-                <el-col :span="12">
+<el-drawer v-model="dialogVisible" direction="rtl">
+        <template #header>
+        <h4>{{ action === 'add' ? '新增IP' : '编辑IP' }}</h4>
+        </template>
+        <template #default>
+        <el-form :model="submitForm" ref="form" label-width="130px" label-position="left">                
                     <el-form-item label="IP名称" prop="copyrightName" :rules="[{ required: true, message: 'IP名称是必填项' }]">
                         <el-input v-model="submitForm.copyrightName" placeholder="请输入IP名称" />
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
+                
+                
                     <el-form-item label="授权方" prop="cpName" :rules="[{ required: true, message: '授权方是必填项' }]">
                         <el-input v-model="submitForm.cpName" placeholder="请输入授权方" />
                     </el-form-item>
-                </el-col>            </el-row>
-
-            <el-row>
-                <el-col :span="12">
+                
+                
                     <el-form-item label="状态" prop="status" :rules="[{ required: true, message: '状态是必填项' }]">
-                        <el-select v-model="submitForm.status" placeholder="请选择状态" style="width:168px">
+                        <el-select v-model="submitForm.status" placeholder="请选择状态" style="width:148px">
                             <el-option v-for="item in statusSubmitOptions" :key="item.value" :label="item.label"
                                 :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
+                
+                
                     <el-form-item label="IP海报" prop="placardUrl" :rules="[{ required: true, message: 'IP海报是必填项' }]">
                         <el-input v-model="submitForm.placardUrl" placeholder="请输入IP海报" />
                     </el-form-item>
-                </el-col>            </el-row>
-
-            <el-row>
-                <el-col :span="12">
+                
+                
                     <el-form-item label="授权到期时间" prop="expireTime" :rules="[{ required: true, message: '授权到期时间是必填项' }]">
                         <el-input v-model="submitForm.expireTime" placeholder="请输入授权到期时间" />
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
+                
+                
                     <el-form-item label="授权类目" prop="topCategoryId" :rules="[{ required: true, message: '授权类目是必填项' }]">
                         <el-input v-model="submitForm.topCategoryId" placeholder="请输入授权类目" />
                     </el-form-item>
-                </el-col>            </el-row>
-
-            <el-row>
-                <el-col :span="12">
+                
+                
                     <el-form-item label="预留清货天数" prop="clearDays" :rules="[{ required: true, message: '预留清货天数是必填项' }]">
                         <el-input v-model="submitForm.clearDays" placeholder="请输入预留清货天数" />
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
+                
+                
                     <el-form-item label="授权书" prop="letterUrl" :rules="[{ required: true, message: '授权书是必填项' }]">
                         <el-input v-model="submitForm.letterUrl" placeholder="请输入授权书" />
                     </el-form-item>
-                </el-col>            </el-row>
-
+                
         </el-form>
+        </template>
         <template #footer>
             <div class="dialog-footer">
                 <el-button @click="handleCancel">取消</el-button>
                 <el-button type="primary" @click="onSubmit">确定</el-button>
             </div>
         </template>
-    </el-dialog>
+    </el-drawer>
 </template>
 
 <script setup>
@@ -319,21 +313,15 @@ function clickDelete(item) {
 </script>
 
 <style lang="less" scoped>
-.table {
-    position: relative;
 
-    .pager {
-        position: absolute;
-        bottom: -50px;
-        right: 0;
-    }
+.search-form :deep(.el-form-item) {
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
 }
 
-.header {
+.search-form :deep(.el-form-item__content) {
     display: flex;
-
-    form {
-        width: 100%;
-    }
+    align-items: center;
 }
 </style>

@@ -2,13 +2,13 @@
     <div>
         <el-form :inline="true" :model="searchForm" class="search-form">
         <el-row class="shadow-md p-4 bg-white" >
-                <el-col :span="21" >
-                    <el-form-item label="角色名称">
+                <el-col :span="22" >
+                    <el-form-item label="角色名称" label-width="100px">
                         <el-input v-model="searchForm.name" placeholder="请输入角色名称" clearable />
                     </el-form-item>
                 </el-col>
                     
-                <el-col :span="3">
+                <el-col :span="2">
                     <div class="flex justify-end">
                         <el-button type="primary" @click="clickSearch">搜索</el-button>
                     </div>
@@ -53,22 +53,24 @@
             @current-change="handleClick" />
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="action === 'add' ? '新增角色' : '编辑角色'" draggable width="650">
-        <el-form :inline="true" :model="submitForm" ref="form">
-            <div class="grid grid-cols-2 gap-2">
-                 <el-form-item label="角色名称" prop="name" :rules="[{ required: true, message: '角色名称是必填项' }]">
-                        <el-input v-model="submitForm.name" placeholder="请输入角色名称" />
-                    </el-form-item>
-            </div>
-
+    <el-drawer v-model="dialogVisible" direction="rtl" size="30%">
+    <template #header>
+      <h4>{{ action === 'add' ? '新增角色' : '编辑角色' }}</h4>
+    </template>
+    <template #default>
+        <el-form :model="submitForm" ref="form" label-width="130px" label-position="left">
+            <el-form-item label="角色名称" prop="name" :rules="[{ required: true, message: '角色名称是必填项' }]">
+                <el-input v-model="submitForm.name" placeholder="请输入角色名称" />
+            </el-form-item>
         </el-form>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button @click="handleCancel">取消</el-button>
-                <el-button type="primary" @click="onSubmit">确定</el-button>
-            </div>
-        </template>
-    </el-dialog>
+    </template>
+    <template #footer>
+        <div class="dialog-footer">
+            <el-button @click="handleCancel">取消</el-button>
+            <el-button type="primary" @click="onSubmit">确定</el-button>
+        </div>
+    </template>
+  </el-drawer>
 
     <el-dialog v-model="menuDialogVisible" title="编辑角色" draggable width="400">
         <el-form :inline="true">

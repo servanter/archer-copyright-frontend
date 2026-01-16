@@ -2,8 +2,8 @@
     <el-aside :width="$store.state.isCollapse ? '180px' : '60px'">
 
        <div class="h-16 flex flex-col items-center justify-center">
-         <p v-show="$store.state.isCollapse" class="text-xl text-center text-gray-500 flex items-center justify-center h-12">管理系统</p>
-        <p v-show="!$store.state.isCollapse" class="text-center text-gray-500">管理系统</p>
+         <p v-show="$store.state.isCollapse" class="text-xl text-center text-gray-500 flex items-center justify-center h-12">xxxxxx</p>
+        <p v-show="!$store.state.isCollapse" class="text-center text-gray-500">xxxxxx</p>
        </div>
        <hr class="border-gray-300">
         <el-menu class="el-menu-vertical-demo" text-color="black" 
