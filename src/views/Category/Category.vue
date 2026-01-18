@@ -9,7 +9,7 @@
                     <el-form-item label="一级类目" label-width="100px">
                         <el-select v-model="searchForm.topCategoryId" placeholder="请选择一级类目" style="width:148px" @change="changeTopCategory">
                             <el-option label="全部" value="0"/>
-                            <el-option v-for="item in topCategoryOptions" :key="item.value" :label="item.label"
+                            <el-option v-for="item in searchTopCategoryOptions" :key="item.value" :label="item.label"
                                 :value="item.value">
                             </el-option>
                         </el-select>
@@ -17,7 +17,7 @@
                     <el-form-item label="二级类目" label-width="100px">
                         <el-select v-model="searchForm.secondCategoryId" placeholder="请选择二级类目" style="width:148px">
                             <el-option label="全部" value="0"/>
-                            <el-option v-for="item in secondCategoryOptions" :key="item.value" :label="item.label"
+                            <el-option v-for="item in searchSecondCategoryOptions" :key="item.value" :label="item.label"
                                 :value="item.value">
                             </el-option>
                         </el-select>
@@ -93,7 +93,7 @@
             @current-change="handleClick" />
     </div>
 
-<el-drawer v-model="dialogVisible" direction="rtl">
+<el-drawer v-model="dialogVisible" direction="rtl" @close="handleCancel">
         <template #header>
         <h4>{{ action === 'add' ? '新增类目' : '编辑类目' }}</h4>
         </template>
@@ -102,22 +102,24 @@
                     <el-form-item label="类目名称" prop="categoryName" :rules="[{ required: true, message: '类目名称是必填项' }]">
                         <el-input v-model="submitForm.categoryName" placeholder="请输入类目名称" />
                     </el-form-item>
-                
-                
-                    <el-form-item label="一级类目ID" prop="topCategoryId" :rules="[{ required: true, message: '一级类目ID是必填项' }]">
-                        <el-input v-model="submitForm.topCategoryId" placeholder="请输入一级类目ID" />
+
+                     <el-form-item label="所属一级类目" label-width="100px">
+                        <el-select v-model="submitForm.topCategoryId" placeholder="不选择为一级类目" @change="changeEditTopCategory">
+                            <el-option label="未选择" value="0"/>
+                            <el-option v-for="item in editTopCategoryOptions" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
-                
-                
-                    <el-form-item label="二级类目ID" prop="secondCategoryId" :rules="[{ required: true, message: '二级类目ID是必填项' }]">
-                        <el-input v-model="submitForm.secondCategoryId" placeholder="请输入二级类目ID" />
+
+                     <el-form-item label="所属二级类目" label-width="100px">
+                        <el-select v-model="submitForm.secondCategoryId" placeholder="不选择为二级类目">
+                            <el-option label="未选择" value="0"/>
+                            <el-option v-for="item in editSecondCategoryOptions" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
-                
-                
-                    <el-form-item label="三级类目ID" prop="thirdCategoryId" :rules="[{ required: true, message: '三级类目ID是必填项' }]">
-                        <el-input v-model="submitForm.thirdCategoryId" placeholder="请输入三级类目ID" />
-                    </el-form-item>
-                
                 
                     <el-form-item label="状态" prop="status" :rules="[{ required: true, message: '状态是必填项' }]">
                         <el-select v-model="submitForm.status" placeholder="请选择状态" style="width:148px">
@@ -155,8 +157,12 @@ const config = reactive({
 const statusOptions = ref([])
 const statusSubmitOptions = ref([])
 
-const topCategoryOptions = ref([])
-const secondCategoryOptions = ref([])
+const searchTopCategoryOptions = ref([])
+const searchSecondCategoryOptions = ref([])
+
+const editTopCategoryOptions = ref([])
+const editSecondCategoryOptions = ref([])
+
 
 // dialog展示控制
 const dialogVisible = ref(false)
@@ -180,7 +186,7 @@ const action = ref('add');
 
 onMounted: {
     queryCategoryList()
-    queryChildrenList(-1, topCategoryOptions)
+    queryChildrenList(0, searchTopCategoryOptions)
 }
 
 // 查询
@@ -197,8 +203,12 @@ async function queryCategoryList() {
 }
 
 async function changeTopCategory(value) {
-    queryChildrenList(value, secondCategoryOptions)
+    queryChildrenList(value, searchSecondCategoryOptions)
 }
+async function changeEditTopCategory(value) {
+    queryChildrenList(value, editSecondCategoryOptions)
+}
+
 async function gotoChildPage(value) {
     if(value.topCategoryId <= 0) {
         searchForm.topCategoryId = value.id
@@ -241,22 +251,27 @@ function clickSearch() {
 function handleAdd() {
     dialogVisible.value = true
     action.value = 'add'
+    queryChildrenList(0, editTopCategoryOptions)
+
 }
 
 // 弹窗 - 编辑
 async function clickEdit(item) {
     action.value = 'edit'
     dialogVisible.value = true
+    queryChildrenList(0, editTopCategoryOptions)
 
     proxy.$nextTick(() => {
         submitForm.id = item.id
         submitForm.categoryName = item.categoryName
 
-        submitForm.topCategoryId = item.topCategoryId
+        submitForm.topCategoryId = item.topCategoryId === 0 ? '' : item.topCategoryId
 
-        submitForm.secondCategoryId = item.secondCategoryId
+        if(item.topCategoryId > 0) {
+            queryChildrenList(item.topCategoryId, editSecondCategoryOptions)
+        }
 
-        submitForm.thirdCategoryId = item.thirdCategoryId
+        submitForm.secondCategoryId = item.secondCategoryId === 0 ? '' : item.secondCategoryId
 
         submitForm.status = item.status
     });
@@ -267,7 +282,6 @@ let submitForm = reactive({
     categoryName: '',
     topCategoryId: '',
     secondCategoryId: '',
-    thirdCategoryId: '',
     status: ''})
 
 // 提交 - 新增/修改
@@ -303,6 +317,9 @@ function handleCancel() {
     dialogVisible.value = false
     proxy.$nextTick(() => {
         proxy.$refs.form.resetFields();
+        submitForm.topCategoryId = ''
+        submitForm.secondCategoryId = ''
+        editSecondCategoryOptions.value = []
     });
 
 }

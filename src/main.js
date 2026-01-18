@@ -10,6 +10,7 @@ import store from './store/index.js'
 import './api/mock.js'
 import api from './api/api'
 import toast from './api/toast.js'
+import upload from './api/upload.js'
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -49,5 +50,6 @@ app.use(ElementPlus)
 app.use(store)
 app.config.globalProperties.$api = api
 app.config.globalProperties.$toast = toast
+app.config.globalProperties.$upload = upload
 
 app.mount('#app')

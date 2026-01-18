@@ -13,6 +13,12 @@ export default {
             type: 'warning'
         })
     },
+    error(msg = '您输入的信息有误，请重新输入') {
+        return ElMessage({
+            message: msg,
+            type: 'error'
+        })
+    },
     confirm(invokeMethod) {
         return ElMessageBox.confirm('确定删除吗？',
             {

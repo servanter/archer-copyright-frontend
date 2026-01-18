@@ -58,11 +58,11 @@
             <el-table-column prop="copyrightName" label="IP名称" />
             <el-table-column prop="cpName" label="授权方" />
             <el-table-column prop="statusStr" label="状态" />
-            <el-table-column prop="placardUrl" label="IP海报" />
-            <el-table-column prop="expireTime" label="授权到期时间" />
+            <el-table-column prop="authExpireDate" label="授权到期日期" />
             <el-table-column prop="topCategoryId" label="授权类目" />
             <el-table-column prop="clearDays" label="预留清货天数" />
-            <el-table-column prop="letterUrl" label="授权书" />
+            <el-table-column prop="authUrl" label="授权书" />
+            <el-table-column prop="placardUrl" label="海报" />
             <el-table-column prop="validStr" label="状态" />
             <el-table-column prop="createTime" label="创建时间" />
             <el-table-column prop="updateTime" label="修改时间" />            <el-table-column fixed="right" label="操作">
@@ -103,14 +103,12 @@
                     </el-form-item>
                 
                 
-                    <el-form-item label="IP海报" prop="placardUrl" :rules="[{ required: true, message: 'IP海报是必填项' }]">
-                        <el-input v-model="submitForm.placardUrl" placeholder="请输入IP海报" />
-                    </el-form-item>
-                
-                
-                    <el-form-item label="授权到期时间" prop="expireTime" :rules="[{ required: true, message: '授权到期时间是必填项' }]">
-                        <el-input v-model="submitForm.expireTime" placeholder="请输入授权到期时间" />
-                    </el-form-item>
+                    <el-form-item label="授权到期日期" prop="authExpireDate" :rules="[{ required: true, message: '授权到期日期是必填项' }]">
+                        <el-date-picker
+                        v-model="submitForm.authExpireDate"
+                        type="date"
+                        placeholder="请选择授权到期日期"
+                    />                    </el-form-item>
                 
                 
                     <el-form-item label="授权类目" prop="topCategoryId" :rules="[{ required: true, message: '授权类目是必填项' }]">
@@ -123,9 +121,33 @@
                     </el-form-item>
                 
                 
-                    <el-form-item label="授权书" prop="letterUrl" :rules="[{ required: true, message: '授权书是必填项' }]">
-                        <el-input v-model="submitForm.letterUrl" placeholder="请输入授权书" />
-                    </el-form-item>
+                    <el-form-item label="授权书" prop="authUrl" :rules="[{ required: true, message: '授权书是必填项' }]">
+                     <el-upload
+                            action="http://localhost:8080/api/common/upload"
+                            v-model:file-list="authUrlFileList"                            :show-file-list="true"
+                            :limit="1"
+                            :on-exceed="proxy.$upload.handleExceed"
+                            :on-success="handleAuthUrlFileUploadSuccess"
+                        >
+                            <div class="h-10 flex items-center justify-center text-gray-400">
+                                <span>点击上传</span>
+                            </div>
+                        </el-upload>                     </el-form-item>
+                
+                
+                    <el-form-item label="海报" prop="placardUrl" :rules="[{ required: true, message: '海报是必填项' }]">
+                      <el-upload
+                            class="border-2 border-dashed border-gray-300 rounded-lg cursor-pointer relative overflow-hidden hover:border-blue-500 transition-colors"
+                            action="http://localhost:8080/api/common/upload"
+                            :show-file-list="false"
+                            :on-success="handlePlacardUrlFileUploadSuccess"
+                            :before-upload="proxy.$upload.validateImageFormat"
+                        >
+                            <img v-if="submitForm.placardUrl" :src="submitForm.placardUrl" class="w-[60px] h-[60px] object-cover" />
+                            <div v-else class="w-[60px] h-[60px] flex items-center justify-center text-gray-400">
+                                <el-icon size="28"><Plus /></el-icon>
+                            </div>
+                        </el-upload>                      </el-form-item>
                 
         </el-form>
         </template>
@@ -162,11 +184,11 @@ const searchForm = reactive({
     copyrightName: '',
     cpName: '',
     status: '',
-    placardUrl: '',
-    expireTime: '',
+    authExpireDate: '',
     topCategoryId: '',
     clearDays: '',
-    letterUrl: ''})
+    authUrl: '',
+    placardUrl: ''})
 
 // table加载状态
 const loadStatus = ref(true)
@@ -206,9 +228,7 @@ function clickSearch() {
     if (searchForm.status.toString().length > 0) {
         config.status = searchForm.status
     }
-    config.placardUrl = searchForm.placardUrl
-
-    config.expireTime = searchForm.expireTime
+    config.authExpireDate = searchForm.authExpireDate
 
     if (searchForm.topCategoryId.toString().length > 0) {
         config.topCategoryId = searchForm.topCategoryId
@@ -216,7 +236,9 @@ function clickSearch() {
     if (searchForm.clearDays.toString().length > 0) {
         config.clearDays = searchForm.clearDays
     }
-    config.letterUrl = searchForm.letterUrl
+    config.authUrl = searchForm.authUrl
+
+    config.placardUrl = searchForm.placardUrl
     queryCopyrightList()
 }
 
@@ -239,16 +261,17 @@ async function clickEdit(item) {
 
         submitForm.status = item.status
 
-        submitForm.placardUrl = item.placardUrl
-
-        submitForm.expireTime = item.expireTime
+        submitForm.authExpireDate = item.authExpireDate
 
         submitForm.topCategoryId = item.topCategoryId
 
         submitForm.clearDays = item.clearDays
 
-        submitForm.letterUrl = item.letterUrl
-    });
+        submitForm.authUrl = item.authUrl
+
+        submitForm.placardUrl = item.placardUrl
+
+authUrlFileList.value = item.authUrl ? [{ name: item.authUrl.split('/').pop(), url: item.authUrl }] : []    });
 }
 
 // form - 新增/修改
@@ -256,11 +279,11 @@ let submitForm = reactive({
     copyrightName: '',
     cpName: '',
     status: '',
-    placardUrl: '',
-    expireTime: '',
+    authExpireDate: '',
     topCategoryId: '',
     clearDays: '',
-    letterUrl: ''})
+    authUrl: '',
+    placardUrl: ''})
 
 // 提交 - 新增/修改
 async function onSubmit() {
@@ -298,7 +321,14 @@ function handleCancel() {
     });
 
 }
+function handleAuthUrlFileUploadSuccess(response, uploadFile) {
+    submitForm.authUrl = proxy.$upload.handleUploadSuccess(response, uploadFile)
+}
 
+const authUrlFileList = ref([])
+function handlePlacardUrlFileUploadSuccess(response, uploadFile) {
+    submitForm.placardUrl = proxy.$upload.handleUploadSuccess(response, uploadFile)
+}
 // 按钮 - 删除
 function clickDelete(item) {
     proxy.$toast.confirm(async () => {
