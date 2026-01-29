@@ -420,6 +420,7 @@
             </div>
         </div>
     </template>
+    
 </el-drawer>
 
 <!-- 渠道配置抽屉 -->
@@ -459,6 +460,7 @@
                             <el-input
                                 v-model="channel.platformProductId"
                                 placeholder="请输入平台商品ID"
+                                :disabled="channel.id > 0"
                                 style="width: 300px"
                             />
                         </div>
@@ -466,29 +468,14 @@
                         <!-- 库存策略 -->
                         <div class="flex items-center">
                             <span class="w-24 text-right mr-2 text-gray-600">库存策略：</span>
-                            <el-radio-group v-model="channel.stockStrategy">
+                            <el-radio-group v-model="channel.stockStrategy" @change="onStockStrategyChange(channel)">
                                 <el-radio :label="1">共享库存</el-radio>
                                 <el-radio :label="2">独立库存</el-radio>
                             </el-radio-group>
                         </div>
 
-                        <!-- 操作按钮 -->
-                        <div class="flex items-center gap-2">
-                            <el-button
-                                v-if="channel.stockStrategy === 2"
-                                type="primary"
-                                size="small"
-                                @click="toggleSkuLockPanel(index)"
-                            >
-                                {{ channel.showSkuLock ? '收起' : '管理SKU锁库存' }}
-                            </el-button>
-                            <el-button type="success" size="small" @click="saveChannelItem(channel)">
-                                保存
-                            </el-button>
-                        </div>
-
-                        <!-- SKU库存锁定面板 -->
-                        <div v-if="channel.stockStrategy === 2 && channel.showSkuLock" class="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
+ <!-- SKU库存锁定面板 -->
+                        <div v-if="channel.stockStrategy === 2" class="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
                             <div class="mb-3 font-medium text-blue-700">
                                 🔒 {{ channel.channelName }}渠道 - SKU库存锁定面板
                             </div>
@@ -519,13 +506,18 @@
                                     批量锁定
                                 </el-button>
                                 <el-button size="small" @click="cancelSkuLock(channel)">
-                                    取消
-                                </el-button>
-                                <el-button type="success" size="small" @click="saveSkuLock(channel)">
-                                    保存
+                                    重置
                                 </el-button>
                             </div>
                         </div>
+                        <!-- 操作按钮 -->
+                        <div class="flex items-center gap-2">
+                            <el-button type="success" size="small" @click="saveSkuLock(channel)">
+                                保存
+                            </el-button>
+                        </div>
+
+                       
                     </div>
                 </el-card>
             </div>
@@ -533,7 +525,7 @@
     </template>
     <template #footer>
         <div class="flex justify-end">
-            <el-button type="primary" @click="saveAllChannelConfig">保存所有配置</el-button>
+            <el-button type="primary" @click="channelDrawerVisible = false">完成分配</el-button>
         </div>
     </template>
 </el-drawer>
@@ -1202,20 +1194,28 @@ async function clickChannel(item) {
     // 加载已配置的渠道数据
     const { data: configData } = await proxy.$api.queryProductChannelConfigList(item.id)
 
+    console.log('渠道配置数据', configData)
     // 初始化渠道配置
     if (configData && configData.length > 0) {
         // 已有配置数据
         channelForm.channels = configData.map(config => {
-            const channelInfo = allChannelList.value.find(c => c.id === config.channelId)
             return {
+                id: config.id,
                 channelId: config.channelId,
-                channelName: channelInfo ? channelInfo.name : '',
+                channelName: config.channelName || '',
                 platformProductId: config.platformProductId || '',
                 stockStrategy: config.stockStrategy || 1,
-                showSkuLock: false,
                 skuList: []
             }
         })
+        console.log('已配置渠道数据', channelForm.channels)
+
+        // 为独立库存的渠道加载SKU数据
+        for (const channel of channelForm.channels) {
+            if (channel.stockStrategy === 2) {
+                await loadChannelSkuList(channel)
+            }
+        }
     } else {
         // 没有配置数据,使用所有渠道初始化
         channelForm.channels = allChannelList.value.map(channel => ({
@@ -1223,19 +1223,15 @@ async function clickChannel(item) {
             channelName: channel.name,
             platformProductId: '',
             stockStrategy: 1,
-            showSkuLock: false,
             skuList: []
         }))
     }
 }
 
-// 切换SKU锁定面板
-async function toggleSkuLockPanel(channelIndex) {
-    const channel = channelForm.channels[channelIndex]
-    channel.showSkuLock = !channel.showSkuLock
-
-    // 如果展开面板且没有SKU数据,则加载SKU数据
-    if (channel.showSkuLock && (!channel.skuList || channel.skuList.length === 0)) {
+// 库存策略改变时触发
+async function onStockStrategyChange(channel) {
+    // 如果切换到独立库存且没有SKU数据,则加载SKU数据
+    if (channel.stockStrategy === 2 && (!channel.skuList || channel.skuList.length === 0)) {
         await loadChannelSkuList(channel)
     }
 }
@@ -1247,6 +1243,7 @@ async function loadChannelSkuList(channel) {
     if (skuList && skuList.length > 0) {
         channel.skuList = skuList.map(sku => ({
             id: sku.id,
+            skuId: sku.skuId,
             specCombination: sku.specCombination || '',
             shareNum: sku.shareNum || 0,
             lockNum: sku.lockNum || 0,
@@ -1315,33 +1312,37 @@ async function saveAllChannelConfig() {
 
 // 保存渠道SKU库存锁定
 async function saveSkuLock(channel) {
+    console.log('保存SKU锁定', channel)
+
     const skuData = channel.skuList
         .filter(sku => sku.lockNum > 0)
         .map(sku => ({
-            id: sku.id,
+            skuId: sku.skuId,
             lockNum: sku.lockNum
         }))
 
-    if (skuData.length === 0) {
+    if (channel.stockStrategy == 2 && skuData.length === 0) {
         proxy.$toast.warning('请至少锁定一个SKU的库存')
         return
     }
 
     try {
         const res = await proxy.$api.saveChannelSkuLock({
+            id: channel.id,
             productId: currentProduct.value.id,
             platformProductId: channel.platformProductId,
             channelId: channel.channelId,
+            stockStrategy: channel.stockStrategy,
             sku: skuData
         })
 
         if (res) {
-            proxy.$toast.success('SKU库存锁定保存成功')
+            proxy.$toast.success('保存成功')
             // 重新加载SKU数据
             await loadChannelSkuList(channel)
         }
     } catch (error) {
-        proxy.$toast.error('SKU库存锁定保存失败: ' + (error.message || '未知错误'))
+        proxy.$toast.error('保存失败: ' + (error.message || '未知错误'))
     }
 }
 

@@ -263,7 +263,7 @@ export default {
     // 查询商品渠道配置列表
     queryProductChannelConfigList(productId) {
         return request({
-            url: `http://localhost:8080/api/product/channel/config/list?productId=${productId}`,
+            url: `http://localhost:8080/api/product/queryProductChannelConfigList?productId=${productId}`,
             method: 'get',
         })
     },
@@ -271,7 +271,7 @@ export default {
     // 查询商品SKU列表
     queryProductSkuList(productId, channelId) {
         return request({
-            url: `http://localhost:8080/api/product/sku/list?productId=${productId}&channelId=${channelId}`,
+            url: `http://localhost:8080/api/product/queryProductChannelSkuList?productId=${productId}&channelId=${channelId}`,
             method: 'get',
         })
     },
@@ -288,7 +288,7 @@ export default {
     // 保存渠道SKU库存锁定（里层）
     saveChannelSkuLock(params) {
         return request({
-            url: 'http://localhost:8080/api/product/channel/sku/lock/save',
+            url: 'http://localhost:8080/api/product/saveChannelSkuLockConfig',
             method: 'post',
             data: params
         })
